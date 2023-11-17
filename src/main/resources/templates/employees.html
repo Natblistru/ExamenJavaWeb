@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employees list</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">OrgMaster</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse gap-3" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add/employee">Add Employee</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Lists
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/employees">Employees</a></li>
+                            <li><a class="dropdown-item" href="/departments">Departments</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/companies">Companies</a></li>
+                        </ul>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    </li>
+                </ul>
+                <div class="navbar-text  text-right">
+                    <span class="text-white" th:text="|Bun venit, ${firstName} ${lastName}|"></span>
+                </div>
+                <form class="d-flex" role="search" th:action="@{/employees}" method="get">
+                    <input class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <h2>List employees</h2>
+        <table id="employeeTable" class="table">
+            <thead>
+            <tr>
+                <th><a th:href="@{/employees(search=${param.search},p=${activePage}, sort=0)}">Name</a></th>
+                <th><a th:href="@{/employees(search=${param.search},p=${activePage}, sort=1)}">Surname</a></th>
+                <th><a th:href="@{/employees(search=${param.search},p=${activePage}, sort=2)}">Birthdate</a></th>
+                <th><a th:href="@{/employees(search=${param.search},p=${activePage}, sort=3)}">Department</a></th>
+                <th><a th:href="@{/employees(search=${param.search},p=${activePage}, sort=4)}">Company</a></th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="employee: ${list}">
+                <td class="col-2" th:text="${employee.name}"></td>
+                <td class="col-2" th:text="${employee.surname}"></td>
+                <td class="col-2" th:text="${employee.birthdate}">test</td>
+                <td class="col-2" th:text="${employee.department != null ? employee.department.name : 'No Department'}"></td>
+                <td class="col-2" th:text="${employee.department != null && employee.department.company != null ? employee.department.company.name : 'No Company'}"></td>
+                <td>
+                    <a th:href="@{'/edit/employee/' + ${employee.id}}">Edit</a>
+                    <a th:href="@{'/delete/employee/' + ${employee.id}}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end align-items-end">
+                <li class="page-item" th:classappend="${activePage == 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:if="${activePage > 1}" th:href="@{/employees(search=${param.search},p=${activePage-1},sort=${param.sort})}">Previous</a>
+                    <span th:unless="${activePage > 1}" class="page-link">Previous</span>
+                </li>
+
+                <li th:each="page: ${#numbers.sequence(1, totalPages)}" th:classappend="${activePage == page ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/employees(search=${param.search},p=${page},sort=${param.sort})}" th:text="${page}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${activePage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link" th:if="${activePage < totalPages}" th:href="@{/employees(search=${param.search},p=${activePage+1}, sort=${param.sort})}">Next</a>
+                    <span th:unless="${activePage < totalPages}" class="page-link">Next</span>
+                </li>
+            </ul>
+        </nav>
+<!--        <a href="./">Back</a>-->
+    </div>
+</main>
+<footer class="fixed-bottom">
+    <p>&copy; 2023 OrgMaster</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        // $('#employeeTable').DataTable({
+        //     paging: false,      // Dezactivează navigarea pe pagini
+        //     searching: false,   // Dezactivează funcția de căutare
+        //     info: false         // Dezactivează afișarea informațiilor despre paginare
+        // });
+
+        // function sortTable(columnIndex) {
+        //     $('#employeeTable').DataTable().order([columnIndex, 'asc']).draw();
+        // }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+/* styles.css */
+
+.container > nav {
+    flex: 1;
+    position: relative;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 130px);
+}
+
+body {
+    display: flex;
+    justify-content: stretch;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    margin-top: 70px;
+    flex: 1;
+    margin-bottom: 50px;
+}
+
+.pagination {
+    position: absolute;
+    bottom: 0;
+}
+
+footer {
+    background-color: #dee2e6;
+    padding-top: 15px;
+    text-align: center;
+}
+.bg-img {
+
+    background-image: url("https://w0.peakpx.com/wallpaper/853/694/HD-wallpaper-orange-leaf.jpg");
+
+    min-height: 380px;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+.bg-light {
+    --bs-bg-opacity: 0.5;
+}
+.container ul {
+    max-width: 400px;
+    margin: auto;
+    border-radius: 20px;
+}
+.container ul li {
+    font-size: 22px;
+    font-weight: 600;
+}
+.custom-form-container {
+    max-width: 500px;
+    margin: auto;
+}
